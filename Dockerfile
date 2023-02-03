@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM nvcr.io/nvidia/pytorch:22.08-py3
 
 RUN apt-get update
 RUN apt-get install python3-pygame -y

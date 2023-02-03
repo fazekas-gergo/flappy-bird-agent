@@ -1,33 +1,25 @@
 import pygame
-from pygame.sprite import Group
+from pygame.sprite import Sprite
+
+SPEED = 60
+FLAGS = pygame.DOUBLEBUF
 
 pygame.init()
+_background = pygame.image.load('images/background.png')
+_window = pygame.display.set_mode((_background.get_width(), _background.get_height()), FLAGS)
+_background.convert()
+_clock = pygame.time.Clock()
+
+WIDTH = _window.get_width()
+HEIGHT = _window.get_height()
 
 
-class Window:
-    def __init__(self, background_img_path: str, frame_rate: int = 30):
-        # Timing
-        self.frame_rate = frame_rate
-        self._clock = pygame.time.Clock()
-        # Sprites
-        self.sprites = Group()
-        # Background
-        self.background = pygame.image.load(background_img_path)
-        self.width = self.background.get_width()
-        self.height = self.background.get_height()
-        self._screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
-        self.background = self.background.convert()
+events: list[pygame.event.Event] = []
 
-    def update(self):
-        dt = self._clock.tick(self.frame_rate)
-        dirty_rects = [s.rect.copy() for s in self.sprites]
-        self.sprites.clear(self._screen, self.background)
-        self.sprites.update(dt)
-        self.sprites.draw(self._screen)
-        dirty_rects.extend([s.rect for s in self.sprites])
-        pygame.display.update(dirty_rects)
 
-    def reset(self):
-        self.sprites.empty()
-        self._screen.blit(self.background, (0, 0))
-        pygame.display.flip()
+def update(*sprites: Sprite):
+    global events
+    events = pygame.event.get()
+    _window.blits(((_background, (0, 0)), *[(s.image, s.rect) for s in sprites]))
+    pygame.display.flip()
+    _clock.tick(SPEED)
