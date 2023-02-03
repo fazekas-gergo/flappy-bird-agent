@@ -3,6 +3,7 @@ import torch
 from torch.nn import functional as F
 import numpy as np
 
+
 class _Model(torch.nn.Module):
     def __init__(self, n_state: int, n_hidden: int) -> bool:
         super().__init__()
@@ -21,11 +22,13 @@ class GeneticAgent:
         self.bird_n = bird_n
         self.models = [_Model(n_state=2, n_hidden=3) for _ in range(bird_n)]
         self.points = [0] * bird_n
+        self.i = 0
 
     def __call__(self, state: tuple, passed: bool) -> bool:
-        bird_positions, pipe_positions = state
-        pipe_pos = pipe_positions[0]
-        return [self._do_jump(i, bird_pos, pipe_pos, passed) for i, bird_pos in enumerate(bird_positions)]
+        if (self.i % 4 == 0) or passed:
+            bird_positions, pipe_positions = state
+            pipe_pos = pipe_positions[0]
+            return [self._do_jump(i, bird_pos, pipe_pos, passed) for i, bird_pos in enumerate(bird_positions)]
 
     def on_game_over(self):
         print(f"Points: {self.points}")

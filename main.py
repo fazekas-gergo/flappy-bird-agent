@@ -14,7 +14,6 @@ def main(agent: Agent):
         if game_over:
             agent.on_game_over()
             game.reset(agent.bird_n)
-        # elif ((i % 4) == 0) or passed:
         else:
             do_jump = agent(state, passed)
             game.jump(do_jump)
